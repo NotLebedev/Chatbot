@@ -13,11 +13,13 @@ public class Dialog {
     private UsersInput usersInput;
     private CommandInput commandInput;
     private Integer chatID;
+    private DialogType dialogType;
 
-    public Dialog(Integer chatID, VkApiClient ck, UserActor actor, BlockingQueue<VKEvent> outPipe) {
+    public Dialog(Integer chatID, VkApiClient ck, UserActor actor, BlockingQueue<VKEvent> outPipe, DialogType dialogType) {
         this.chatID = chatID;
         usersInput = new UsersInput(ck, actor, chatID, outPipe);
         commandInput = new CommandInput(ck, actor, chatID, outPipe);
+        this.dialogType = dialogType;
     }
 
     public Integer getChatID () {

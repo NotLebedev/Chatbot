@@ -1,5 +1,6 @@
 package com.artemie.chatbot;
 
+import com.artemie.chatbot.dialog.DialogType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +78,7 @@ public class DatabaseManager {
 
             ResultSet resultSet = statement.executeQuery(query);
 
-            result = new ArrayList<Integer>();
+            result = new ArrayList<>();
 
             while (resultSet.next()) {
                 result.add(resultSet.getInt("CHAT_ID_VK"));
@@ -109,15 +110,37 @@ public class DatabaseManager {
 
     }
 
+    public DialogType getDialogType(Integer chatID) {
+
+        try {
+            Statement statement = db.createStatement();
+
+            String query = "SELECT IS_WHITELIST FROM MODERATED_CHATS WHERE CHAT_ID_VK = " + chatID;
+
+            ResultSet resultSet = statement.executeQuery(query);
+
+            statement.close();
+
+            if(resultSet.getBoolean("IS_WHITELIST")) {
+                return DialogType.WHITE_LIST;
+            }else {
+                return DialogType.BLACK_LIST;
+            }
+
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+
+        return null;
+
+    }
+
     public ArrayList<Integer> getUsersBanned(Integer chatID) {
 
         ArrayList<Integer> result = null;
 
         try {
             Statement statement = db.createStatement();
-
-            //SELECT USER_ID_VK FROM (SELECT * FROM MODERATED_CHATS LEFT JOIN  USER_STATE ON ID = CHAT_ID WHERE STATE = 0 AND CHAT_ID_VK = 1) LEFT JOIN MODERATED_USERS ON USER_ID = ID
-            //v1
 
             String query = "SELECT USER_ID_VK FROM (SELECT * FROM MODERATED_CHATS LEFT JOIN  USER_STATE ON ID = CHAT_ID WHERE STATE = 0 AND CHAT_ID_VK = " + chatID + ") LEFT JOIN MODERATED_USERS ON USER_ID = ID";
 

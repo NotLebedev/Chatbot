@@ -37,7 +37,7 @@ public class Chatbot {
         dialogs = new ArrayList<>();
 
         for (Integer dialogID : dialogIDs) {
-            dialogs.add(new Dialog(dialogID, vk, actor, firstPipe));
+            dialogs.add(new Dialog(dialogID, vk, actor, firstPipe, DatabaseManager.getInstance().getDialogType(dialogID)));
         }
 
         logic = new Logic(firstPipe, secondPipe, this);
